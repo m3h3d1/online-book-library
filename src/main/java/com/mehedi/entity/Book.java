@@ -28,6 +28,9 @@ public class Book {
     @Column(name = "author")
     private String author;
 
+    @Column(name = "cover_url")
+    private String coverUrl;
+
     @Column(name = "availability_status")
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availabilityStatus;
