@@ -11,6 +11,8 @@ import com.mehedi.repository.BookBorrowRepository;
 import com.mehedi.repository.BookRepository;
 import com.mehedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
@@ -30,7 +32,11 @@ public class BorrowService {
     private BookBorrowRepository bookBorrowRepository;
 
     @Transactional
-    public void borrowBook(Long bookId, Long userId, LocalDate dueDate) {
+    public void borrowBook(Long bookId, Long temp, LocalDate dueDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+        Long userId = userNow.getUserId();
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
 
@@ -56,7 +62,11 @@ public class BorrowService {
 
 
 
-    public void returnBook(Long bookId, Long userId) {
+    public void returnBook(Long bookId, Long temp) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+        Long userId = userNow.getUserId();
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
 
@@ -115,7 +125,11 @@ public class BorrowService {
         }
     }
 
-    public List<BorrowHistoryDTO> getUserBorrowHistory(Long userId) {
+    public List<BorrowHistoryDTO> getUserBorrowHistory(Long temp) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+        Long userId = userNow.getUserId();
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 

@@ -14,6 +14,8 @@ import com.mehedi.repository.BookRepository;
 import com.mehedi.repository.BookReviewRepository;
 import com.mehedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +37,10 @@ public class BookReviewService {
     }
 
     public void createReview(Long bookId, Long userId, Integer rating, String comment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+        userId = userNow.getUserId();
+
         Optional<Book> optionalBook = bookRepository.findByBookId(bookId);
         Optional<User> optionalUser = userRepository.findByUserId(userId);
 
@@ -60,6 +66,11 @@ public class BookReviewService {
     }
 
     public void updateReviewAndRating(Long userId, Long bookId, Long reviewId, Integer newRating, String newComment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+        userId = userNow.getUserId();
+
+
         Optional<Book> optionalBook = bookRepository.findByBookId(bookId);
         Optional<User> optionalUser = userRepository.findByUserId(userId);
 
@@ -88,6 +99,10 @@ public class BookReviewService {
     }
 
     public void deleteReview(Long bookId, Long reviewId, Long userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+        userId = userNow.getUserId();
+
         BookReview review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + reviewId));
 

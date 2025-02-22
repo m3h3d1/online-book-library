@@ -3,11 +3,13 @@ import com.mehedi.constatnts.AvailabilityStatus;
 import com.mehedi.dto.BookWithUserDTO;
 import com.mehedi.entity.Book;
 import com.mehedi.entity.User;
-import com.mehedi.exception.BookNotFoundException;
-import com.mehedi.exception.BookServiceException;
-import com.mehedi.exception.DuplicateBookException;
+import com.mehedi.exception.*;
 import com.mehedi.repository.BookRepository;
+import com.mehedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,7 +21,17 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public Book createBook(Book book) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("ADMIN"))) {
+            throw new AccessDeniedException("Access is denied. You must have the 'ADMIN' role to create a book.");
+        }
+
         if (book.getTitle() == "" || book.getAuthor() == "") {
             throw new IllegalArgumentException("Title and author cannot be null.");
         }

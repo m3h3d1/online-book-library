@@ -10,6 +10,8 @@ import com.mehedi.repository.BookRepository;
 import com.mehedi.repository.BookReservationRepository;
 import com.mehedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,12 +45,12 @@ public class BookReservationService {
         return reservationRepository.findByBook(book);
     }
 
-    public void reserveBook(Long bookId, Long userId) {
+    public void reserveBook(Long bookId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(authentication.getName()).get();
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
         if (book.getAvailabilityStatus() == AvailabilityStatus.AVAILABLE) {
             throw new ErrorMessage("The book is already available.");
@@ -87,10 +89,13 @@ public class BookReservationService {
 //        }
 //    }
 
-    public void cancelReservation(Long bookId, Long userId) {
+    public void cancelReservation(Long bookId) {
 //        BookReservation reservation = reservationRepository.findById(reservationId)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+
         Optional<Book> bookOptional = bookRepository.findByBookId(bookId);
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<User> userOptional = userRepository.findById(userNow.getUserId());
         if(!bookOptional.isPresent()) {
             throw new BookNotFoundException("This book is not found.");
         }
@@ -99,7 +104,7 @@ public class BookReservationService {
         BookReservation reservation = reservationRepository.findByBookAndUser(book, user)
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation not found with this book: " + bookId));
 
-        if (!reservation.getUser().getUserId().equals(userId)) {
+        if (!reservation.getUser().getUserId().equals(userNow.getUserId())) {
             throw new UnauthorizedUserException("You are not authorized to cancel this reservation.");
         }
 
