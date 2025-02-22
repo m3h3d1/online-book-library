@@ -6,8 +6,6 @@ public class BookReviewRequest {
     private Integer rating;
     private String comment;
 
-    // Constructors, getters, and setters
-
     public BookReviewRequest() {
     }
 

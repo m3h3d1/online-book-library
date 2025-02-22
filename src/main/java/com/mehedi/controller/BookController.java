@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
@@ -59,4 +60,18 @@ public class BookController {
         }
     }
 
+    @GetMapping("/{bookId}")
+    public ResponseEntity<?> getBookById(@PathVariable Long bookId) {
+        try {
+            Optional<Book> book = bookService.findBookById(bookId);
+
+            if (book.isPresent()) {
+                return new ResponseEntity<>(book.get(), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Book not found with id: " + bookId, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Failed to fetch the book with id: " + bookId, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

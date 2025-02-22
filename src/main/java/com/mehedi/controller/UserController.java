@@ -96,4 +96,14 @@ public class UserController {
     public ResponseEntity<Set<?>> findCurrentBorrowedBooksByUser(@PathVariable Long userId){
         return new ResponseEntity<>(borrowService.currentlyBorrowedBooks(userId),HttpStatus.OK);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            List<User> allUsers = userService.getAllUsers();
+            return new ResponseEntity<>(allUsers, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
