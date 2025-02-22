@@ -1,5 +1,6 @@
 package com.mehedi.controller;
 
+import com.mehedi.dto.BookReviewDTO;
 import com.mehedi.dto.BookReviewRequest;
 import com.mehedi.dto.ReviewRequest;
 import com.mehedi.entity.BookReview;
@@ -39,17 +40,32 @@ public class BookReviewController {
         return new ResponseEntity<>("Review created successfully", HttpStatus.CREATED);
     }
 
+    @GetMapping("")
+    public ResponseEntity<List<BookReviewDTO>> getReviewsForBook(@PathVariable Long bookId) {
+        List<BookReviewDTO> reviews = bookReviewService.getReviewsByBookId(bookId);
+        if (reviews.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(reviews, HttpStatus.OK);
+    }
+
     @PutMapping("/{reviewId}/update")
     public ResponseEntity<String> updateReviewAndRating(
+            @PathVariable Long bookId,
             @PathVariable Long reviewId,
-//            @RequestBody Integer newRating,
-//            @RequestBody String newComment
             @RequestBody ReviewRequest reviewRequest
-            ) {
+    ) {
+        Long userId = 1L;
         Integer newRating = reviewRequest.getRating();
         String newComment = reviewRequest.getComment();
-        bookReviewService.updateReviewAndRating(reviewId, newRating, newComment);
-        return new ResponseEntity<>("Review updated successfully", HttpStatus.OK);
+        try {
+            bookReviewService.updateReviewAndRating(userId, bookId, reviewId, newRating, newComment);
+            return new ResponseEntity<>("Review updated successfully", HttpStatus.OK);
+        } catch (ReviewNotFoundException e) {
+            return new ResponseEntity<>("Review not found for the given book and review IDs", HttpStatus.NOT_FOUND);
+        } catch (UnauthorizedUserException e) {
+            return new ResponseEntity<>("You are not authorized to update this review", HttpStatus.FORBIDDEN);
+        }
     }
 
     @DeleteMapping("/{reviewId}/delete")

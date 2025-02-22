@@ -38,10 +38,8 @@ public class BorrowService {
             throw new BookUnavailableException("Book is already borrowed.");
         }
 
-        // Set the book's availability status to BORROWED.
         book.setAvailabilityStatus(AvailabilityStatus.BORROWED);
 
-        // Create a new BookBorrow entry.
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
@@ -52,52 +50,10 @@ public class BorrowService {
         bookBorrow.setDueDate(dueDate);
         bookBorrow.setReturnDate(null);
 
-        // Save the updated book and the new bookBorrow entry to the database.
         bookRepository.save(book);
         bookBorrowRepository.save(bookBorrow);
     }
 
-//    public void borrowBook(Long bookId, Long userId, LocalDate borrowDate, LocalDate dueDate) {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
-//
-//        if (book.getAvailabilityStatus() == AvailabilityStatus.BORROWED) {
-//            throw new BookUnavailableException("Book is already borrowed.");
-//        }
-//
-//        // Set the book's availability status to BORROWED.
-//        book.setAvailabilityStatus(AvailabilityStatus.BORROWED);
-//
-//        // Set the due date based on the provided parameter.
-//        book.setBorrowDate(borrowDate);
-//        book.setDueDate(dueDate);
-//
-//        // Associate the book with the user by updating the book's user_id field.
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-//        book.setUser(user);
-//
-//        // Save the updated book to the database.
-//        bookRepository.save(book);
-//    }
-
-//    public void returnBook(Long bookId) {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
-//
-//        if (book.getAvailabilityStatus() != AvailabilityStatus.BORROWED) {
-//            throw new ErrorMessage("Book is not currently borrowed.");
-//        }
-//
-//        // Update the book's availability status to AVAILABLE.
-//        book.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
-//
-//        // Remove the user association by setting the book's user to null.
-//        book.setUser(null);
-//
-//        // Save the updated book to the database.
-//        bookRepository.save(book);
-//    }
 
 
     public void returnBook(Long bookId, Long userId) {
@@ -111,50 +67,21 @@ public class BorrowService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
-        // Find the corresponding BookBorrow entry for this book and user
         BookBorrow bookBorrow = bookBorrowRepository.findByBookAndUser(book, user);
 
         if (bookBorrow == null) {
             throw new BookReturnException("No borrow record found for this user and book.");
         }
 
-        // Set the book's availability status to AVAILABLE.
         book.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
 
-        // Remove the association between the book and the user.
         book.setUser(null);
 
-        // Set the return date to the current date.
         bookBorrow.setReturnDate(LocalDate.now());
 
-        // Save the updated book and the updated bookBorrow entry to the database.
         bookRepository.save(book);
         bookBorrowRepository.save(bookBorrow);
     }
-
-
-//    public void returnBook(Long bookId, Long userId) {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
-//
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-//
-//        if (!book.getAvailabilityStatus().equals(AvailabilityStatus.BORROWED)) {
-//            throw new BookReturnException("Book is not borrowed by the user.");
-//        }
-//
-//        // Set the book's availability status to AVAILABLE.
-//        book.setAvailabilityStatus(AvailabilityStatus.AVAILABLE);
-//
-//        // Remove the association between the book and the user.
-////        book.setUser(null);
-//
-//        book.setDueDate(null);
-//
-//        // Save the updated book to the database.
-//        bookRepository.save(book);
-//    }
 
     @Service
     public class BorrowBookService {
@@ -169,11 +96,9 @@ public class BorrowService {
         private BookRepository bookRepository;
 
         public List<BorrowHistoryDTO> getUserBorrowHistory(Long userId) {
-            // Retrieve the user by userId
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
-            // Retrieve the borrowing history for the user
             List<BookBorrow> borrowHistory = bookBorrowRepository.findByUser(user);
 
             // Convert the BookBorrow entities to BorrowHistoryDTO objects
@@ -191,7 +116,6 @@ public class BorrowService {
     }
 
     public List<BorrowHistoryDTO> getUserBorrowHistory(Long userId) {
-        // Retrieve the user by userId
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 

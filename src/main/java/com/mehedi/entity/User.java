@@ -1,41 +1,47 @@
 package com.mehedi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Email;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@NoArgsConstructor
-@AllArgsConstructor
+@Entity
+@Table(name="User")
+@Component
 @Getter
 @Setter
-@Entity
-@Table(name = "user")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userId;
-    @Column(name = "first_name")
+    @Column(name = "first_name",nullable = false)
+    @NotEmpty
     private String firstName;
-    @Column(name = "last_name")
+    @Column(name = "last_name",nullable = false)
+    @NotEmpty
     private String lastName;
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
+    @NotEmpty
+    @Email
     private String email;
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
+    @NotEmpty
     private String password;
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
+    @NotEmpty
     private String address;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private List<Book> books;
-
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<BookReview> reviews = new ArrayList<>();
+    public enum Role {
+        CUSTOMER,
+        ADMIN
+    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
 }

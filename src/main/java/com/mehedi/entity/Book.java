@@ -9,11 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 @Getter
 @Setter
 @Entity
@@ -34,28 +29,11 @@ public class Book {
     private String author;
 
     @Column(name = "availability_status")
-//    private String availabilityStatus; // Use enum or string, depending on your preference
     @Enumerated(EnumType.STRING)
     private AvailabilityStatus availabilityStatus;
-
-//    @Column(name = "borrow_date")
-//    @Temporal(TemporalType.DATE)
-//    private LocalDate borrowDate;
-
-//    @Column(name = "due_date")
-//    @Temporal(TemporalType.DATE)
-//    private LocalDate dueDate; // Use java.util.Date or java.time.LocalDate, as needed
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id") // Name of the foreign key column in the Book table
-//    @JsonIgnore
-//    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User user;
-
-//    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<BookReview> reviews = new ArrayList<>();
 }

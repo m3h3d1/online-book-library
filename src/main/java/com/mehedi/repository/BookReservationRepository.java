@@ -14,4 +14,5 @@ public interface BookReservationRepository extends JpaRepository<BookReservation
     List<BookReservation> findByUser(User user);
     List<BookReservation> findByBook(Book book);
     List<BookReservation> findByUserAndBook(User user, Book book);
+    Optional<BookReservation> findByBookAndUser(Book book, User user);
 }

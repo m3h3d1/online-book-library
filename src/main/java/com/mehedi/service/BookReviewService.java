@@ -1,6 +1,9 @@
 package com.mehedi.service;
 
+import com.mehedi.dto.BookReviewDTO;
+import com.mehedi.dto.BorrowHistoryDTO;
 import com.mehedi.entity.Book;
+import com.mehedi.entity.BookBorrow;
 import com.mehedi.entity.BookReview;
 import com.mehedi.entity.User;
 import com.mehedi.exception.BookNotFoundException;
@@ -13,6 +16,7 @@ import com.mehedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,41 +59,64 @@ public class BookReviewService {
         }
     }
 
-//    public Optional<List<BookReview>> getReviewsByBookId(Long bookId) {
-////        return Optional<List<BookReview>> reviews = bookReviewRepository.findByBookId(bookId);
-//        return reviewRepository.findByBookId(bookId);
-//    }
-//    public List<BookReview> getReviewsAndRatingsByBookId(Long bookId) {
-//        return reviewRepository.findByBook_Id(bookId);
-////                .orElseThrow(() -> new BookNotFoundException("No reviews found for book with id: " + bookId));
-//    }
+    public void updateReviewAndRating(Long userId, Long bookId, Long reviewId, Integer newRating, String newComment) {
+        Optional<Book> optionalBook = bookRepository.findByBookId(bookId);
+        Optional<User> optionalUser = userRepository.findByUserId(userId);
 
-    public void updateReviewAndRating(Long reviewId, Integer newRating, String newComment) {
-        BookReview review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + reviewId));
+        if(!optionalBook.isPresent() || !optionalUser.isPresent()) {
+            throw new ReviewNotFoundException("You didn't review this book");
+        }
 
-        // Check if the user is allowed to update their own review (CUSTOMER check here)
-        // You may add additional logic to validate user permissions.
+        Book book = optionalBook.get();
+        User user = optionalUser.get();
 
-        // Update the review's rating and comment
+        Optional<BookReview> reviewOptional = reviewRepository.findByReviewIdAndUserAndBook(reviewId, user, book);
+        if(!reviewOptional.isPresent()) {
+            throw new ReviewNotFoundException("You didn't review this book");
+        }
+
+        BookReview review = reviewOptional.get();
+
+        if (!review.getUser().getUserId().equals(userId)) {
+            throw new UnauthorizedUserException("You are not authorized to update this review");
+        }
+
         review.setRating(newRating);
         review.setComment(newComment);
 
-        // Save the updated review
         reviewRepository.save(review);
     }
 
     public void deleteReview(Long bookId, Long reviewId, Long userId) {
-        // Check if the review exists
         BookReview review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + reviewId));
 
-        // Check if the user is the author of the review
         if (!review.getUser().getUserId().equals(userId)) {
             throw new UnauthorizedUserException("You are not authorized to delete this review");
         }
 
-        // Delete the review
         reviewRepository.delete(review);
+    }
+
+    public List<BookReviewDTO> getReviewsByBookId(Long bookId) {
+        Optional<Book> bookOptional = bookRepository.findByBookId(bookId);
+        if(!bookOptional.isPresent()) {
+            throw new BookNotFoundException("This book is not found");
+        }
+        Book book = bookOptional.get();
+
+        List<BookReview> bookReviews = reviewRepository.findByBook(book);
+
+        List<BookReviewDTO> bookReviewsDTO = new ArrayList<>();
+        for (BookReview review : bookReviews) {
+            BookReviewDTO bookReviewDTO = new BookReviewDTO();
+            bookReviewDTO.setReviewId(review.getReviewId());
+            bookReviewDTO.setRating(review.getRating());
+            bookReviewDTO.setComment(review.getComment());
+            bookReviewDTO.setUserId(review.getUser().getUserId());
+            bookReviewDTO.setUsername(review.getUser().getFirstName()+" "+review.getUser().getLastName());
+            bookReviewsDTO.add(bookReviewDTO);
+        }
+        return bookReviewsDTO;
     }
 }
