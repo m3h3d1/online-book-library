@@ -1,6 +1,7 @@
 package com.mehedi.service;
 
 import com.mehedi.constatnts.AvailabilityStatus;
+import com.mehedi.dto.BorrowHistoryDTO;
 import com.mehedi.dto.BorrowRequest;
 import com.mehedi.entity.Book;
 import com.mehedi.entity.BookBorrow;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class BorrowService {
@@ -152,4 +155,59 @@ public class BorrowService {
 //        // Save the updated book to the database.
 //        bookRepository.save(book);
 //    }
+
+    @Service
+    public class BorrowBookService {
+
+        @Autowired
+        private BookBorrowRepository bookBorrowRepository;
+
+        @Autowired
+        private UserRepository userRepository;
+
+        @Autowired
+        private BookRepository bookRepository;
+
+        public List<BorrowHistoryDTO> getUserBorrowHistory(Long userId) {
+            // Retrieve the user by userId
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+            // Retrieve the borrowing history for the user
+            List<BookBorrow> borrowHistory = bookBorrowRepository.findByUser(user);
+
+            // Convert the BookBorrow entities to BorrowHistoryDTO objects
+            List<BorrowHistoryDTO> historyDTOList = new ArrayList<>();
+            for (BookBorrow borrow : borrowHistory) {
+                BorrowHistoryDTO historyDTO = new BorrowHistoryDTO();
+                historyDTO.setBookTitle(borrow.getBook().getTitle());
+                historyDTO.setDueDate(borrow.getDueDate());
+                historyDTO.setReturnDate(borrow.getReturnDate());
+                historyDTOList.add(historyDTO);
+            }
+
+            return historyDTOList;
+        }
+    }
+
+    public List<BorrowHistoryDTO> getUserBorrowHistory(Long userId) {
+        // Retrieve the user by userId
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+
+        // Retrieve the borrowing history for the user
+        List<BookBorrow> borrowHistory = bookBorrowRepository.findByUser(user);
+
+        // Convert the BookBorrow entities to BorrowHistoryDTO objects
+        List<BorrowHistoryDTO> historyDTOList = new ArrayList<>();
+        for (BookBorrow borrow : borrowHistory) {
+            BorrowHistoryDTO historyDTO = new BorrowHistoryDTO();
+            historyDTO.setBookTitle(borrow.getBook().getTitle());
+            historyDTO.setDueDate(borrow.getDueDate());
+            historyDTO.setReturnDate(borrow.getReturnDate());
+            historyDTOList.add(historyDTO);
+        }
+
+        return historyDTOList;
+    }
 }
