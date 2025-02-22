@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -34,4 +36,26 @@ public class BookController {
             return new ResponseEntity<>("Failed to update the book.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/delete/{bookId}")
+    public ResponseEntity<?> deleteBook(@PathVariable Long bookId) {
+        try {
+            bookService.deleteBook(bookId);
+            return new ResponseEntity<>("Book deleted successfully", HttpStatus.OK);
+        } catch (BookNotFoundException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Failed to delete the book.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllBooks() {
+        try {
+            List<Book> books = bookService.getAllBooks();
+            return new ResponseEntity<>(books, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Failed to fetch books." + ex, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

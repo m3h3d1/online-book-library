@@ -1,10 +1,14 @@
-//package com.mehedi.repository;
-//
-//import com.mehedi.entity.User;
-//import org.springframework.data.jpa.repository.JpaRepository;
-//import org.springframework.stereotype.Repository;
-//
-//@Repository
-//public interface UserRepository extends JpaRepository<User, Long> {
-//    User findByEmail(String email);
-//}
+package com.mehedi.repository;
+
+import com.mehedi.entity.Book;
+import com.mehedi.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+    Optional<User> findByUserId(Long bookId);
+}

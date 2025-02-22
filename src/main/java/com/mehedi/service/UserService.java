@@ -1,28 +1,37 @@
-//package com.mehedi.service;
-//
-//import com.mehedi.entity.User;
-//import com.mehedi.repository.UserRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
+package com.mehedi.service;
+
+import com.mehedi.entity.User;
+import com.mehedi.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+//    private final PasswordEncoder passwordEncoder;
 //
-//@Service
-//public class UserService {
 //    @Autowired
-//    private UserRepository userRepository;
-//
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-//
-//    public User registerUser(User user) {
-//        // Check if the user with the provided email already exists
-//        if (userRepository.findByEmail(user.getEmail()) != null) {
-//            throw new RuntimeException("User with this email already exists");
-//        }
-//
-//        // Hash the user's password before saving it
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-//
-//        return userRepository.save(user);
+//    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+//        this.userRepository = userRepository;
+//        this.passwordEncoder = passwordEncoder;
 //    }
-//}
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public Optional<User> findUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+}
