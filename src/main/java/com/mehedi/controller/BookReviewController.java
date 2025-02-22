@@ -30,13 +30,7 @@ public class BookReviewController {
             @PathVariable Long bookId,
             @RequestBody BookReviewRequest reviewRequest
     ) {
-        Long userId = 1L; //*******
-        bookReviewService.createReview(
-                bookId,
-                userId,
-                reviewRequest.getRating(),
-                reviewRequest.getComment()
-        );
+        bookReviewService.createReview(bookId, reviewRequest.getRating(), reviewRequest.getComment());
         return new ResponseEntity<>("Review created successfully", HttpStatus.CREATED);
     }
 
@@ -73,9 +67,8 @@ public class BookReviewController {
             @PathVariable Long bookId,
             @PathVariable Long reviewId
     ) {
-        Long userId = 1L;
         try {
-            bookReviewService.deleteReview(bookId, reviewId, userId);
+            bookReviewService.deleteReview(bookId, reviewId);
             return ResponseEntity.ok("Review deleted successfully");
         } catch (ReviewNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

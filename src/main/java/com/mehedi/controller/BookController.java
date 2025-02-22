@@ -45,9 +45,10 @@ public class BookController {
         } catch (BookNotFoundException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception ex) {
-            return new ResponseEntity<>("Failed to delete the book.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Failed to delete the book. " + ex.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/all")
     public ResponseEntity<?> getAllBooks() {
         try {

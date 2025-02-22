@@ -30,10 +30,16 @@ public class BorrowService {
     private BookBorrowRepository bookBorrowRepository;
 
     @Transactional
-    public void borrowBook(Long bookId, Long temp, LocalDate dueDate) {
+    public void borrowBook(Long bookId, LocalDate dueDate) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
+
+        if (!userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not authorized to access this!");
+        }
+
         Long userId = userNow.getUserId();
+
 
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
@@ -63,6 +69,11 @@ public class BorrowService {
     public void returnBook(Long bookId, Long temp) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
+
+        if (!userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not authorized to access this!");
+        }
+
         Long userId = userNow.getUserId();
 
         Book book = bookRepository.findById(bookId)
@@ -91,18 +102,16 @@ public class BorrowService {
         bookBorrowRepository.save(bookBorrow);
     }
 
-    public List<BorrowHistoryDTO> getUserBorrowHistory(Long temp) {
+    public List<BorrowHistoryDTO> getUserBorrowHistory(Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
-        Long userId = userNow.getUserId();
+//        Long userId = userNow.getUserId();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
 
-        // Retrieve the borrowing history for the user
         List<BookBorrow> borrowHistory = bookBorrowRepository.findByUser(user);
 
-        // Convert the BookBorrow entities to BorrowHistoryDTO objects
         List<BorrowHistoryDTO> historyDTOList = new ArrayList<>();
         for (BookBorrow borrow : borrowHistory) {
             BorrowHistoryDTO historyDTO = new BorrowHistoryDTO();
@@ -145,6 +154,10 @@ public class BorrowService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
 
+        if (!userNow.getUserId().equals(userId) && userNow.getRole().equals("CUSTOMER")) {
+            throw new UnauthorizedUserException("You are not authorized to access this!");
+        }
+
         Optional<User> optionalUser=userRepository.findByUserId(userId);
 
         if(!optionalUser.isPresent()) {
@@ -154,7 +167,7 @@ public class BorrowService {
 
         List<Book> borrowedList = bookRepository.findByUserAndAvailabilityStatus(user,AvailabilityStatus.BORROWED);
 
-        if(userNow.getRole().equals(User.Role.CUSTOMER) && userNow.getUserId().equals(userId)) {
+        if(userNow.getRole().equals(User.Role.ADMIN)) {
             Set<BookBorrowDTO> borrowedBooks = new HashSet<>();
             for(Book book: borrowedList) {
                 BookBorrowDTO bookDto = new BookBorrowDTO();
@@ -167,7 +180,7 @@ public class BorrowService {
             return borrowedBooks;
         }
 
-        if(userNow.getRole().equals(User.Role.ADMIN)) {
+        if(userNow.getRole().equals(User.Role.CUSTOMER) && userNow.getUserId().equals(userId)) {
             Set<BookBorrowDTO> borrowedBooks = new HashSet<>();
             for(Book book: borrowedList) {
                 BookBorrowDTO bookDto = new BookBorrowDTO();

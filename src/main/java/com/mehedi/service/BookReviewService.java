@@ -36,38 +36,37 @@ public class BookReviewService {
         this.userRepository = userRepository;
     }
 
-    public void createReview(Long bookId, Long userId, Integer rating, String comment) {
+    public void createReview(Long bookId, Integer rating, String comment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
-        userId = userNow.getUserId();
+
+        if(!userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not Authorized");
+        }
 
         Optional<Book> optionalBook = bookRepository.findByBookId(bookId);
-        Optional<User> optionalUser = userRepository.findByUserId(userId);
 
-        if (optionalBook.isPresent() && optionalUser.isPresent()) {
+        if (optionalBook.isPresent()) {
             Book book = optionalBook.get();
-            User user = optionalUser.get();
 
             BookReview review = new BookReview();
             review.setBook(book);
-            review.setUser(user);
+            review.setUser(userNow);
             review.setRating(rating);
             review.setComment(comment);
 
             reviewRepository.save(review);
         } else {
-            if (!optionalBook.isPresent()) {
-                throw new BookNotFoundException("Book not found with id: " + bookId);
-            }
-            if (!optionalUser.isPresent()) {
-                throw new UserNotFoundException("User not found with id: " + userId);
-            }
+            throw new BookNotFoundException("Book not found with id: " + bookId);
         }
     }
 
     public void updateReviewAndRating(Long userId, Long bookId, Long reviewId, Integer newRating, String newComment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
+        if(!userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not Authorized");
+        }
         userId = userNow.getUserId();
 
 
@@ -98,15 +97,20 @@ public class BookReviewService {
         reviewRepository.save(review);
     }
 
-    public void deleteReview(Long bookId, Long reviewId, Long userId) {
+    public void deleteReview(Long bookId, Long reviewId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
-        userId = userNow.getUserId();
+        if(!userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not Authorized to access this. Only customer can");
+        }
 
-        BookReview review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException("Review not found with id: " + reviewId));
+        Book book = bookRepository.findByBookId(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book not found with bookId: " + bookId));
 
-        if (!review.getUser().getUserId().equals(userId)) {
+        BookReview review = reviewRepository.findByBookAndReviewId(book, reviewId)
+                .orElseThrow(() -> new ReviewNotFoundException("Review not found with bookId: " + bookId + ", reviewId: " + reviewId));
+
+        if (!review.getUser().getUserId().equals(userNow.getUserId())) {
             throw new UnauthorizedUserException("You are not authorized to delete this review");
         }
 

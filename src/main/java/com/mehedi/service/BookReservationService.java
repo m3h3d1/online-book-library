@@ -47,7 +47,12 @@ public class BookReservationService {
 
     public void reserveBook(Long bookId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(authentication.getName()).get();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+
+        if(!userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not Authorized");
+        }
+
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
 
@@ -55,15 +60,14 @@ public class BookReservationService {
             throw new ErrorMessage("The book is already available.");
         }
 
-        // Check if the user has already reserved the same book
-        List<BookReservation> existingReservations = reservationRepository.findByUserAndBook(user, book);
+        List<BookReservation> existingReservations = reservationRepository.findByBookAndReservationStatus(book, ReservationStatus.CONFIRMED);
         if (!existingReservations.isEmpty()) {
             throw new ErrorMessage("An user already reserved this book.");
         }
 
         BookReservation reservation = new BookReservation();
         reservation.setBook(book);
-        reservation.setUser(user);
+        reservation.setUser(userNow);
         reservation.setReservationDate(LocalDate.now());
         reservation.setNotified(false);
         reservation.setReservationStatus(ReservationStatus.CONFIRMED);
@@ -71,47 +75,23 @@ public class BookReservationService {
         reservationRepository.save(reservation);
     }
 
-//    public void notifyUserForAvailableBook(Long bookId) {
-//        Book book = bookRepository.findById(bookId)
-//                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
-//
-//        // Get all reservations for this book
-//        List<BookReservation> reservations = reservationRepository.findByBook(book);
-//
-//        // Check each reservation and notify users if the book is now available
-//        for (BookReservation reservation : reservations) {
-//            if (!reservation.isNotified()) {
-//                // Notify the user (you can implement notification logic here)
-//                reservation.setNotified(true);
-//                reservationRepository.save(reservation);
-//            }
-//        }
-//    }
-
     public void cancelReservation(Long bookId) {
-//        BookReservation reservation = reservationRepository.findById(reservationId)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
 
+        if(!userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not Authorized");
+        }
+
         Optional<Book> bookOptional = bookRepository.findByBookId(bookId);
-        Optional<User> userOptional = userRepository.findById(userNow.getUserId());
         if(!bookOptional.isPresent()) {
             throw new BookNotFoundException("This book is not found.");
         }
         Book book = bookOptional.get();
-        User user = userOptional.get();
-        BookReservation reservation = reservationRepository.findByBookAndUser(book, user)
+
+        BookReservation reservation = reservationRepository.findByBookAndUser(book, userNow)
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation not found with this book: " + bookId));
 
-        if (!reservation.getUser().getUserId().equals(userNow.getUserId())) {
-            throw new UnauthorizedUserException("You are not authorized to cancel this reservation.");
-        }
-
-        if (reservation.getReservationStatus() == ReservationStatus.CANCELED) {
-            throw new BookReservationException("The reservation is already canceled.");
-        }
-
-        reservation.setReservationStatus(ReservationStatus.CANCELED);
-        reservationRepository.save(reservation);
+        reservationRepository.delete(reservation);
     }
 }
