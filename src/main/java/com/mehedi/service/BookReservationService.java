@@ -51,7 +51,6 @@ public class BookReservationService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
 
-
         if (book.getAvailabilityStatus() == AvailabilityStatus.AVAILABLE) {
             throw new ErrorMessage("The book is already available.");
         }
@@ -67,7 +66,7 @@ public class BookReservationService {
         reservation.setUser(user);
         reservation.setReservationDate(LocalDate.now());
         reservation.setNotified(false);
-        reservation.setReservationStatus(ReservationStatus.PENDING);
+        reservation.setReservationStatus(ReservationStatus.CONFIRMED);
 
         reservationRepository.save(reservation);
     }

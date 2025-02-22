@@ -55,8 +55,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         String user = ((User)authResult.getPrincipal()).getUsername();
         System.out.println(user+"  ddddd");
         String accessToken = JWTUtils.generateToken(user);
-        UserAuthService userService = (UserAuthService) SpringApplicationContext.getBean("userAuthService");
-        UserDto userDto = userService.getUser(user);
+        UserAuthService userAuthService = (UserAuthService) SpringApplicationContext.getBean("userAuthService");
+        UserDto userDto = userAuthService.getUser(user);
 //        response.addHeader("userId",userDto.getUserId());
 //        response.addHeader(AppConstants.HEADER_STRING,AppConstants.TOKEN_PREFIX+accessToken);
         Map<String, Object> responseBody = new HashMap<>();

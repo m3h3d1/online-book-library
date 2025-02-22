@@ -1,12 +1,11 @@
 package com.mehedi.controller;
 
 import com.mehedi.constatnts.AppConstants;
-import com.mehedi.dto.BorrowHistoryDTO;
-import com.mehedi.dto.LoginResponseDTO;
-import com.mehedi.dto.UserDto;
-import com.mehedi.dto.UserLoginRequestModel;
+import com.mehedi.dto.*;
+import com.mehedi.entity.User;
 import com.mehedi.service.BorrowService;
 import com.mehedi.service.UserAuthService;
+import com.mehedi.service.UserService;
 import com.mehedi.utils.JWTUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("")
@@ -33,6 +33,9 @@ public class UserController {
 
     @Autowired
     private BorrowService borrowService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/users/{userId}/history")
     public ResponseEntity<List<BorrowHistoryDTO>> getUserBorrowHistory(@PathVariable Long userId) {
@@ -64,5 +67,33 @@ public class UserController {
             return new ResponseEntity<>("Wrong Email!", HttpStatus.UNAUTHORIZED);
 
         }
+    }
+
+    @GetMapping("users/{userId}")
+    public ResponseEntity<?> getUserById(@PathVariable Long userId) {
+        try {
+            User user = userService.findUserDetails(userId);
+            if (user != null) {
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/users/{userId}/books")
+    public ResponseEntity<?> retriveBooks(@PathVariable Long userId) {
+        try {
+            List<BookBorrowDTO> allBookByUser = borrowService.getAllBookByUser(userId);
+            return new ResponseEntity<>(allBookByUser, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/users/{userId}/borrowed-books")
+    public ResponseEntity<Set<?>> findCurrentBorrowedBooksByUser(@PathVariable Long userId){
+        return new ResponseEntity<>(borrowService.currentlyBorrowedBooks(userId),HttpStatus.OK);
     }
 }
