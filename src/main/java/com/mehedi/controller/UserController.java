@@ -3,6 +3,7 @@ package com.mehedi.controller;
 import com.mehedi.constatnts.AppConstants;
 import com.mehedi.dto.*;
 import com.mehedi.entity.User;
+import com.mehedi.service.BookReservationService;
 import com.mehedi.service.BorrowService;
 import com.mehedi.service.UserAuthService;
 import com.mehedi.service.UserService;
@@ -37,6 +38,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BookReservationService bookReservationService;
+
     @GetMapping("/users/{userId}/history")
     public ResponseEntity<List<BorrowHistoryDTO>> getUserBorrowHistory(@PathVariable Long userId) {
         List<BorrowHistoryDTO> borrowHistory = borrowService.getUserBorrowHistory(userId);
@@ -57,6 +61,7 @@ public class UserController {
             Map<String, Object> loginResponse = new HashMap<>();
             loginResponse.put("userId", userDto.getUserId());
             loginResponse.put("email", userDto.getEmail());
+            loginResponse.put("role", userDto.getRole());
             loginResponse.put(AppConstants.HEADER_STRING, AppConstants.TOKEN_PREFIX + accessToken);
             return ResponseEntity.status(HttpStatus.OK).body(loginResponse);
 
@@ -83,6 +88,16 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Failed to delete the user with id: " + userId, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/users/{userId}/books")
     public ResponseEntity<?> retriveBooks(@PathVariable Long userId) {
         try {
@@ -95,6 +110,11 @@ public class UserController {
     @GetMapping("/users/{userId}/borrowed-books")
     public ResponseEntity<Set<?>> findCurrentBorrowedBooksByUser(@PathVariable Long userId){
         return new ResponseEntity<>(borrowService.currentlyBorrowedBooks(userId),HttpStatus.OK);
+    }
+
+    @GetMapping("/users/{userId}/reserved-books")
+    public ResponseEntity<Set<?>> findCurrentReservedBooksByUser(@PathVariable Long userId){
+        return new ResponseEntity<>(bookReservationService.currentlyReservedBooks(userId),HttpStatus.OK);
     }
 
     @GetMapping("/users")

@@ -115,6 +115,7 @@ public class BorrowService {
         List<BorrowHistoryDTO> historyDTOList = new ArrayList<>();
         for (BookBorrow borrow : borrowHistory) {
             BorrowHistoryDTO historyDTO = new BorrowHistoryDTO();
+            historyDTO.setBookId(borrow.getBook().getBookId());
             historyDTO.setBookTitle(borrow.getBook().getTitle());
             historyDTO.setDueDate(borrow.getDueDate());
             historyDTO.setReturnDate(borrow.getReturnDate());

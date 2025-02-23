@@ -1,5 +1,6 @@
 package com.mehedi.controller;
 
+import com.mehedi.dto.BookSearchByPrefixDTO;
 import com.mehedi.entity.Book;
 import com.mehedi.exception.BookNotFoundException;
 import com.mehedi.service.BookService;
@@ -72,6 +73,21 @@ public class BookController {
             }
         } catch (Exception ex) {
             return new ResponseEntity<>("Failed to fetch the book with id: " + bookId, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchBooksByTitle(@RequestBody BookSearchByPrefixDTO bookSearchByPrefixDTO) {
+        String title = bookSearchByPrefixDTO.getTitle();
+        try {
+            List<Book> books = bookService.searchBooksByTitle(title);
+            if (!books.isEmpty()) {
+                return new ResponseEntity<>(books, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("No books found with the title: " + title, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Failed to search for books with title: " + title, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

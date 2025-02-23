@@ -2,6 +2,7 @@ package com.mehedi.service;
 
 import com.mehedi.constatnts.AvailabilityStatus;
 import com.mehedi.constatnts.ReservationStatus;
+import com.mehedi.dto.BookReservationDTO;
 import com.mehedi.entity.Book;
 import com.mehedi.entity.BookReservation;
 import com.mehedi.entity.User;
@@ -15,8 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BookReservationService {
@@ -60,7 +60,7 @@ public class BookReservationService {
             throw new ErrorMessage("The book is already available.");
         }
 
-        List<BookReservation> existingReservations = reservationRepository.findByBookAndReservationStatus(book, ReservationStatus.CONFIRMED);
+        List<BookReservation> existingReservations = reservationRepository.findByBookAndReservationStatus(book, ReservationStatus.RESERVED);
         if (!existingReservations.isEmpty()) {
             throw new ErrorMessage("An user already reserved this book.");
         }
@@ -70,7 +70,7 @@ public class BookReservationService {
         reservation.setUser(userNow);
         reservation.setReservationDate(LocalDate.now());
         reservation.setNotified(false);
-        reservation.setReservationStatus(ReservationStatus.CONFIRMED);
+        reservation.setReservationStatus(ReservationStatus.RESERVED);
 
         reservationRepository.save(reservation);
     }
@@ -93,5 +93,56 @@ public class BookReservationService {
                 .orElseThrow(() -> new ReservationNotFoundException("Reservation not found with this book: " + bookId));
 
         reservationRepository.delete(reservation);
+    }
+
+    public Set<BookReservationDTO> currentlyReservedBooks(Long userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User userNow = userRepository.findByEmail(authentication.getName()).get();
+
+        if (!userNow.getUserId().equals(userId) && userNow.getRole().equals(User.Role.CUSTOMER)) {
+            throw new UnauthorizedUserException("You are not authorized to access this!");
+        }
+
+        Optional<User> optionalUser = userRepository.findByUserId(userId);
+
+        if (!optionalUser.isPresent()) {
+            throw new UserNotFoundException("User Not Found");
+        }
+        User user = optionalUser.get();
+
+        List<BookReservation> reservedList = reservationRepository.findByUserAndReservationStatus(user, ReservationStatus.RESERVED);
+
+        if (userNow.getRole().equals(User.Role.ADMIN)) {
+            Set<BookReservationDTO> reservedBooks = new HashSet<>();
+            for (BookReservation reservation : reservedList) {
+                Book book = reservation.getBook();
+                BookReservationDTO reservationDto = new BookReservationDTO();
+                reservationDto.setBookId(book.getBookId());
+                reservationDto.setTitle(book.getTitle());
+                reservationDto.setAuthor(book.getAuthor());
+                reservationDto.setReservationDate(reservation.getReservationDate());
+                reservationDto.setNotified(reservation.isNotified());
+                reservationDto.setReservationStatus(reservation.getReservationStatus().toString());
+                reservedBooks.add(reservationDto);
+            }
+            return reservedBooks;
+        }
+
+        if (userNow.getRole().equals(User.Role.CUSTOMER) && userNow.getUserId().equals(userId)) {
+            Set<BookReservationDTO> reservedBooks = new HashSet<>();
+            for (BookReservation reservation : reservedList) {
+                Book book = reservation.getBook();
+                BookReservationDTO reservationDto = new BookReservationDTO();
+                reservationDto.setBookId(book.getBookId());
+                reservationDto.setTitle(book.getTitle());
+                reservationDto.setAuthor(book.getAuthor());
+                reservationDto.setReservationDate(reservation.getReservationDate());
+                reservationDto.setNotified(reservation.isNotified());
+                reservationDto.setReservationStatus(reservation.getReservationStatus().toString());
+                reservedBooks.add(reservationDto);
+            }
+            return reservedBooks;
+        }
+        return Collections.emptySet();
     }
 }

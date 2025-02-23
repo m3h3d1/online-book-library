@@ -10,7 +10,6 @@ import java.util.List;
 
 @Repository
 public interface BookBorrowRepository extends JpaRepository<BookBorrow, Long> {
-    // You can add custom query methods here if needed
     BookBorrow findByBookAndUser(Book book, User user);
     List<BookBorrow> findByUser(User user);
 }

@@ -17,4 +17,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findByUserAndAvailabilityStatus(User user, AvailabilityStatus availabilityStatus);
 
     List<Book> findByAvailabilityStatus(AvailabilityStatus availabilityStatus);
+
+    List<Book> findByTitleStartingWithIgnoreCase(String prefix);
 }

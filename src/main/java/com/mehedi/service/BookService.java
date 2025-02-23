@@ -85,4 +85,17 @@ public class BookService {
     public Optional<Book> findBookById(Long bookId) {
         return bookRepository.findById(bookId);
     }
+
+    public List<Book> searchBooksByTitle(String title) {
+        try {
+            if (title == null || title.isEmpty()) {
+                throw new IllegalArgumentException("Title cannot be empty.");
+            }
+
+            List<Book> books = bookRepository.findByTitleStartingWithIgnoreCase(title);
+            return books;
+        } catch (Exception ex) {
+            throw new BookServiceException("Failed to search for books by title.", ex);
+        }
+    }
 }

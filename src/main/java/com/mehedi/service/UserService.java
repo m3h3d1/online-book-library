@@ -2,7 +2,9 @@ package com.mehedi.service;
 
 import com.mehedi.entity.BookBorrow;
 import com.mehedi.entity.User;
+import com.mehedi.exception.ErrorMessage;
 import com.mehedi.exception.UnauthorizedUserException;
+import com.mehedi.exception.UserNotFoundException;
 import com.mehedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,14 @@ public class UserService {
 
         Optional<User> userOptional = userRepository.findById(userId);
         return userOptional.orElse(null);
+    }
+
+    public void deleteUser(Long userId) {
+        try {
+            userRepository.deleteById(userId);
+        } catch (Exception ex) {
+            throw new ErrorMessage("Failed to delete the user with ID: " + userId + ". Error message:" + ex.toString());
+        }
     }
 
     public List<User> getAllUsers() {
