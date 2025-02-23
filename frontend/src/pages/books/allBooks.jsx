@@ -26,9 +26,6 @@ const AllBooks = () => {
         <CircularProgress />
       ) : (
         <div>
-          <Typography variant="h4" gutterBottom>
-            Book Information
-          </Typography>
           <Grid container spacing={3}>
             {bookData.map((book) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={book.bookId}>
@@ -36,7 +33,7 @@ const AllBooks = () => {
                   <CardMedia
                     component="img"
                     alt={book.title}
-                    style={{ height: '100%', width: '100%', objectFit: 'cover' }}
+                    style={{ height: '80%', width: '80%', objectFit: 'cover' }}
                     image={book.coverUrl}
                   />
                   <CardContent>

@@ -1,54 +1,47 @@
-import { useEffect, useState } from "react";
-import axiosInstance from "../utils/axiosInstance";
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../utils/axiosInstance';
 
-const SearchPage = () => {
-  const [searchText, setSearchText] = useState("");
-  const [userDetails, setUserDetails] = useState();
-  const [loading, setLoading] = useState(false);
+const UserSearchPage = () => {
+  const [userId, setUserId] = useState('');
+  const [userData, setUserData] = useState(null);
 
-  const callUserDetailsApi = () => {
-    setLoading(true);
-    axiosInstance
-      .get(`/users/${searchText}`)
-      .then((resp) => {
-        const data = resp.data;
-        setUserDetails(data.data);
+  const handleUserIdChange = (e) => {
+    setUserId(e.target.value);
+  };
+
+  const searchUser = () => {
+    axiosInstance.get(`/users/${userId}`)
+      .then((response) => {
+        setUserData(response.data);
       })
-      .finally(() => {
-        setLoading(false);
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
       });
   };
 
-  useEffect(() => {
-    const timeOut = setTimeout(() => {
-      callUserDetailsApi();
-    }, 1500);
-
-    return () => clearTimeout(timeOut);
-  }, [searchText]);
-
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
-      <h1>Search User</h1>
-      <input
-        value={searchText}
-        placeholder="Enter search key"
-        onChange={(e) => {
-          setSearchText(e.target.value);
-        }}
-      />
-
-      {loading && <h1 style={{ color: "purple" }}>Loading</h1>}
-
-      <h1>The details:</h1>
+    <div>
+      <h1>Search User by UserId</h1>
       <div>
-        <h3>{userDetails?.first_name}</h3>
-        <img src={userDetails?.avatar} />
+        <label>
+          User ID:
+          <input type="text" value={userId} onChange={handleUserIdChange} />
+        </label>
+        <button onClick={searchUser}>Search</button>
       </div>
+      {userData && (
+        <div>
+          <h2>User Information</h2>
+          <p>User ID: {userData.userId}</p>
+          <p>First Name: {userData.firstName}</p>
+          <p>Last Name: {userData.lastName}</p>
+          <p>Email: {userData.email}</p>
+          <p>Address: {userData.address}</p>
+          <p>Role: {userData.role}</p>
+        </div>
+      )}
     </div>
   );
 };
 
-export default SearchPage;
+export default UserSearchPage;

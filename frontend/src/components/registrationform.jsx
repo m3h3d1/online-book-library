@@ -1,7 +1,16 @@
-import axios from "axios";
-import { useState } from "react";
-import axiosInstance from "../utils/axiosInstance";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import axiosInstance from "../utils/axiosInstance";
 
 const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -14,7 +23,7 @@ const RegistrationForm = () => {
   const [role, setRole] = useState("CUSTOMER"); // Default role is CUSTOMER
   const [isRegistrationDone, setIsRegistrationDone] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -29,18 +38,17 @@ const RegistrationForm = () => {
     };
 
     setIsLoading(true);
+
     axiosInstance
       .post("/user/register", data)
       .then((resp) => {
         console.log("The Response", resp);
         setIsRegistrationDone(true);
         navigate("/login");
-        // setIsLoading(false);
       })
-      .catch((error) => {
-        console.log("Error ", error);
-        setError(error);
-        // setIsLoading(false);
+      .catch((err) => {
+        console.error("Error", err);
+        setError("An error occurred during registration.");
       })
       .finally(() => {
         setIsLoading(false);
@@ -48,188 +56,100 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      p={3}
+      bgcolor="background.paper"
     >
-      <h1>Registration</h1>
+      <Typography variant="h4">Registration</Typography>
       {isRegistrationDone && (
-        <h2 style={{ color: "green" }}>Successfully Done Registration</h2>
+        <Typography style={{ color: "green" }}>
+          Successfully Done Registration
+        </Typography>
       )}
-      {isLoading && <h1>Loading.....</h1>}
+      {isLoading && <Typography>Loading...</Typography>}
+      {error && <Typography color="error">{error}</Typography>}
+
       <form onSubmit={handleRegister}>
-        <div>
-          <h4>First Name</h4>
-          <input
-            value={firstName}
-            placeholder="Enter First Name"
-            onChange={(e) => {
-              setFirstName(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="First Name"
+          variant="outlined"
+          value={firstName}
+          placeholder="Enter First Name"
+          onChange={(e) => setFirstName(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <div>
-          <h4>Last Name</h4>
-          <input
-            value={lastName}
-            placeholder="Enter Last Name"
-            onChange={(e) => {
-              setLastName(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="Last Name"
+          variant="outlined"
+          value={lastName}
+          placeholder="Enter Last Name"
+          onChange={(e) => setLastName(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <div>
-          <h4>Email</h4>
-          <input
-            value={email}
-            placeholder="Enter Email"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="Email"
+          variant="outlined"
+          value={email}
+          placeholder="Enter Email"
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <div>
-          <h4>Password</h4>
-          <input
-            value={password}
-            placeholder="Enter Password"
-            type="password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="Password"
+          variant="outlined"
+          value={password}
+          placeholder="Enter Password"
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <div>
-          <h4>Address</h4>
-          <input
-            value={address}
-            placeholder="Enter Address"
-            onChange={(e) => {
-              setAddress(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="Address"
+          variant="outlined"
+          value={address}
+          placeholder="Enter Address"
+          onChange={(e) => setAddress(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <div>
-          <h4>Role</h4>
-          <select
+        <FormControl variant="outlined" fullWidth margin="normal">
+          <InputLabel id="role-label">Role</InputLabel>
+          <Select
+            labelId="role-label"
+            id="role"
             value={role}
-            onChange={(e) => {
-              setRole(e.target.value);
-            }}
+            onChange={(e) => setRole(e.target.value)}
+            label="Role"
           >
-            <option value="CUSTOMER">Customer</option>
-            <option value="ADMIN">Admin</option>
-          </select>
-        </div>
+            <MenuItem value="CUSTOMER">Customer</MenuItem>
+            <MenuItem value="ADMIN">Admin</MenuItem>
+          </Select>
+        </FormControl>
 
-        <button type="submit">Register</button>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+          fullWidth
+        >
+          Register
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 
 export default RegistrationForm;
-
-
-
-
-
-
-// import axios from "axios";
-// import { useState } from "react";
-// import axiosInstance from "../utils/axiosInstance";
-// import { useNavigate } from "react-router-dom";
-
-// const RegistrationForm = () => {
-//   const navigate = useNavigate();
-
-//   const [name, setName] = useState("");
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [isRegistrationDone, setIsRegistrationDone] = useState(false);
-//   const [isLoading, setIsLoading] = useState(false);
-//   const [error, setError] = useState();
-
-//   const handleRegister = (e) => {
-//     e.preventDefault();
-
-//     const data = {
-//       // username: name,
-//       email: email,
-//       password: password,
-//     };
-
-//     setIsLoading(true);
-//     axiosInstance
-//       .post("/post", data)
-//       .then((resp) => {
-//         console.log("The Response", resp);
-//         setIsRegistrationDone(true);
-//         navigate("/login");
-//         // setIsLoading(false);
-//       })
-//       .catch((error) => {
-//         console.log("Error ", error);
-//         setError(error);
-//         // setIsLoading(false);
-//       })
-//       .finally(() => {
-//         setIsLoading(false);
-//       });
-//   };
-
-//   return (
-//     <div
-//       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-//     >
-//       <h1>Registration</h1>
-//       {isRegistrationDone && (
-//         <h2 style={{ color: "green" }}>Successfully Done Registration</h2>
-//       )}
-//       {isLoading && <h1>Loading.....</h1>}
-//       <form onSubmit={handleRegister}>
-//         <div>
-//           <h4>Name</h4>
-//           <input
-//             value={name}
-//             placeholder="Enter Name"
-//             onChange={(e) => {
-//               setName(e.target.value);
-//             }}
-//           />
-//         </div>
-
-//         <div>
-//           <h4>Email</h4>
-//           <input
-//             value={email}
-//             placeholder="Enter Email"
-//             onChange={(e) => {
-//               setEmail(e.target.value);
-//             }}
-//           />
-//         </div>
-
-//         <div>
-//           <h4>Password</h4>
-//           <input
-//             value={password}
-//             placeholder="Enter Password"
-//             type="password"
-//             onChange={(e) => {
-//               setPassword(e.target.value);
-//             }}
-//           />
-//         </div>
-
-//         <button type="submit">Register</button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default RegistrationForm;

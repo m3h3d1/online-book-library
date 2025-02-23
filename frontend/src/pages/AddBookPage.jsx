@@ -1,7 +1,12 @@
-import axios from "axios";
 import { useState } from "react";
-import axiosInstance from "../utils/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import {
+  Typography,
+  TextField,
+  Button,
+  Box,
+} from "@mui/material";
+import axiosInstance from "../utils/axiosInstance";
 
 const AddBookPage = () => {
   const navigate = useNavigate();
@@ -11,7 +16,7 @@ const AddBookPage = () => {
   const [coverUrl, setCoverUrl] = useState("");
   const [isBookAdded, setIsBookAdded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState("");
 
   const handleAddBook = (e) => {
     e.preventDefault();
@@ -23,6 +28,7 @@ const AddBookPage = () => {
     };
 
     setIsLoading(true);
+
     axiosInstance
       .post("/books/create", data)
       .then((resp) => {
@@ -31,7 +37,7 @@ const AddBookPage = () => {
         navigate("/books");
       })
       .catch((error) => {
-        console.log("Error ", error);
+        console.log("Error", error);
         setError(error);
       })
       .finally(() => {
@@ -40,51 +46,60 @@ const AddBookPage = () => {
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    <Box
+      alignItems="center"
+      p={3}
+      bgcolor="background.paper"
     >
-      <h1>Add a Book</h1>
+      <Typography variant="h4">Add a Book</Typography>
       {isBookAdded && (
-        <h2 style={{ color: "green" }}>Book Added Successfully</h2>
+        <Typography style={{ color: "green" }}>Book Added Successfully</Typography>
       )}
-      {isLoading && <h1>Loading.....</h1>}
+      {isLoading && <Typography>Loading...</Typography>}
+      {error && <Typography color="error">{error.message}</Typography>}
+
       <form onSubmit={handleAddBook}>
-        <div>
-          <h4>Title</h4>
-          <input
-            value={title}
-            placeholder="Enter Title"
-            onChange={(e) => {
-              setTitle(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="Title"
+          variant="outlined"
+          value={title}
+          placeholder="Enter Title"
+          onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <div>
-          <h4>Author</h4>
-          <input
-            value={author}
-            placeholder="Enter Author"
-            onChange={(e) => {
-              setAuthor(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="Author"
+          variant="outlined"
+          value={author}
+          placeholder="Enter Author"
+          onChange={(e) => setAuthor(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <div>
-          <h4>Cover URL</h4>
-          <input
-            value={coverUrl}
-            placeholder="Enter Cover URL"
-            onChange={(e) => {
-              setCoverUrl(e.target.value);
-            }}
-          />
-        </div>
+        <TextField
+          label="Cover URL"
+          variant="outlined"
+          value={coverUrl}
+          placeholder="Enter Cover URL"
+          onChange={(e) => setCoverUrl(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-        <button type="submit">Add Book</button>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          size="large"
+          fullWidth
+        >
+          Add Book
+        </Button>
       </form>
-    </div>
+    </Box>
   );
 };
 

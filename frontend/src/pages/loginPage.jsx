@@ -19,28 +19,6 @@ const LoginPage = () => {
   const { handleChange, handleSubmit, error, formData, isLoading } =
     UseCustomHooks();
 
-  // const navigate = useNavigate();
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-
-  // const handleLogin = (e) => {
-  //   e.preventDefault();
-  //   console.log("Loggin in");
-
-  //   const userCredential = {
-  //     email: email,
-  //     password: password,
-  //   };
-
-  //   axiosInstance.post("/user/login", userCredential).then((resp) => {
-  //     const data = resp.data;
-
-  //     console.log("Response from login ", data);
-  //     localStorage.setItem("token", data.Authorization);
-  //     navigate("/");
-  //   });
-  // };
-
 
   return (
     <Container component="main" maxWidth="sm">

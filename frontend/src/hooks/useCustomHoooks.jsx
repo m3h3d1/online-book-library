@@ -41,7 +41,12 @@ const UseCustomHooks = () => {
         const token = resp.data.Authorization;
         localStorage.setItem("token", token);
         setIsRegistrationDone(true);
-        navigate("/"); // Use navigate to redirect to the login page
+        if(data.email=="shafi@gmail.com") {
+          navigate("/admin");
+        }
+        else {
+          navigate("/"); // Use navigate to redirect to the login page
+        }
       })
       .catch((error) => {
         setError(true);

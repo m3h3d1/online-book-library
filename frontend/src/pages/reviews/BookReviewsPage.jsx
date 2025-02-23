@@ -3,6 +3,14 @@ import axiosInstance from '../../utils/axiosInstance';
 import { useParams } from 'react-router-dom';
 import AddReviewForm from './AddReviewForm';
 import EditReviewForm from './EditReviewForm';
+import {
+  Button,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material';
 
 const BookReviewsPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -51,42 +59,53 @@ const BookReviewsPage = () => {
       .catch((error) => {
         console.error('Error deleting review:', error);
       });
-  };  
+  };
 
   return (
     <div>
-      <h2>Reviews and Ratings</h2>
-      <button onClick={() => handleEditReview('add')}>Add Review</button>
+      <Typography variant="h4" gutterBottom>
+        Reviews and Ratings
+      </Typography>
+      <Button onClick={() => handleEditReview('add')} variant="contained" color="primary">
+        Add Review
+      </Button>
       {loading ? (
-        <p>Loading reviews...</p>
+        <Typography>Loading reviews...</Typography>
       ) : (
-        <ul>
+        <List>
           {reviews.map((review) => (
-            <li key={review.reviewId}>
-              <p>Rating: {review.rating}</p>
-              <p>Comment: {review.comment}</p>
-              <p>Posted by: {review.username}</p>
-              {editingReview === review.reviewId && (
-                <EditReviewForm
-                  bookId={bookId}
-                  reviewId={review.reviewId}
-                  initialRating={review.rating}
-                  initialComment={review.comment}
-                  onUpdate={handleReviewUpdated}
-                />
-              )}
-              <button onClick={() => handleEditReview(review.reviewId)}>
-                Update Review
-              </button>
-              <button onClick={() => handleDeleteReview(review.reviewId)}>
+            <ListItem key={review.reviewId}>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={4}>
+                  <ListItemText primary={`Rating: ${review.rating}`} secondary={`Comment: ${review.comment}`} />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <ListItemText primary={`Posted by: ${review.username}`} />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  {editingReview === review.reviewId && (
+                    <EditReviewForm
+                      bookId={bookId}
+                      reviewId={review.reviewId}
+                      initialRating={review.rating}
+                      initialComment={review.comment}
+                      onUpdate={handleReviewUpdated}
+                    />
+                  )}
+                  <Button onClick={() => handleEditReview(review.reviewId)} variant="contained" color="primary">
+                    Update Review
+                  </Button>
+                  <Button onClick={() => handleDeleteReview(review.reviewId)} variant="contained" color="error">
                     Delete Review
-                </button>
-            </li>
+                  </Button>
+                </Grid>
+              </Grid>
+            </ListItem>
           ))}
           {editingReview === 'add' && (
             <AddReviewForm bookId={bookId} onReviewAdded={handleReviewAdded} />
           )}
-        </ul>
+        </List>
       )}
     </div>
   );

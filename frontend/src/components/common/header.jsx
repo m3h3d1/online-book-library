@@ -20,7 +20,7 @@ const Header = () => {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Logo
+          Online Book Library
         </Typography>
         <div>
           <Button color="inherit" component={Link} to="/">
@@ -28,14 +28,8 @@ const Header = () => {
           </Button>
           {token ? (
             <>
-              <Button color="inherit" component={Link} to="/users">
-                User List
-              </Button>
-              <Button color="inherit" component={Link} to="/user/search">
-                Search User
-              </Button>
-              <Button color="inherit" component={Link} to="/books/create">
-                Add Book
+              <Button color="inherit" component={Link} to="/users/4/history">
+                My History
               </Button>
               <Button color="inherit" onClick={handleLogout}>
                 Logout
