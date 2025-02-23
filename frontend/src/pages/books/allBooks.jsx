@@ -1,9 +1,7 @@
-// AllBooks.js
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
-import { CircularProgress, Typography, Grid, Card, CardContent, CardMedia } from '@mui/material';
+import { CircularProgress, Typography, Grid, Card, CardContent, CardMedia, Button } from '@mui/material';
 
 const AllBooks = () => {
   const [bookData, setBookData] = useState([]);
@@ -53,6 +51,11 @@ const AllBooks = () => {
                     <Typography variant="body2" color="textSecondary">
                       Availability Status: {book.availabilityStatus}
                     </Typography>
+                    <Link to={`/books/${book.bookId}/reviews`}>
+                      <Button variant="contained" color="primary">
+                        Rating & Reviews
+                      </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </Grid>

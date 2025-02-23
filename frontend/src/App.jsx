@@ -12,6 +12,7 @@ import SearchPage from "./pages/searchPage";
 import AddBookPage from "./pages/AddBookPage";
 import BookDetailsPage from "./pages/books/bookDetailsPage";
 import Footer from "./components/common/footer";
+import BookReviewsPage from "./pages/reviews/BookReviewsPage";
 // import SignIn from "./pages/SignIn";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
           <Route path="/users/:userId" element={<UserDetails />} />
           <Route path="/user/search" element={<SearchPage />} />
         </Route>
+        <Route path="/books/:bookId/reviews" element={<BookReviewsPage/>} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />

@@ -15,6 +15,7 @@ import {
   DialogContent,
   DialogActions,
 } from '@mui/material';
+import BookInformation from './BookInformation';
 
 const BookDetailsPage = () => {
   const { bookId } = useParams();
@@ -69,6 +70,14 @@ const BookDetailsPage = () => {
       });
   };
 
+  const handleBorrowSuccess = (borrowedBook) => {
+    setBookData(borrowedBook);
+  };
+
+  const handleReturnSuccess = (returnedBook) => {
+    setBookData(returnedBook);
+  };
+
   return (
     <div>
       {loading ? (
@@ -94,52 +103,16 @@ const BookDetailsPage = () => {
                 <Grid item xs={12} sm={6}>
                   <Card>
                     <CardContent>
-                      {editMode ? (
-                        <div>
-                          <TextField
-                            label="Title"
-                            fullWidth
-                            value={updatedBookData.title}
-                            onChange={(e) => setUpdatedBookData({ ...updatedBookData, title: e.target.value })}
-                          />
-                          <TextField
-                            label="Author"
-                            fullWidth
-                            value={updatedBookData.author}
-                            onChange={(e) => setUpdatedBookData({ ...updatedBookData, author: e.target.value })}
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <Typography variant="h6" component="div">
-                            {bookData.title}
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            Author: {bookData.author}
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            Availability Status: {bookData.availabilityStatus}
-                          </Typography>
-                        </div>
-                      )}
-                      {editMode ? (
-                        <Button variant="contained" color="primary" onClick={handleUpdateClick}>
-                          Confirm Update
-                        </Button>
-                      ) : (
-                        <div>
-                          <Button variant="contained" color="primary" onClick={handleEditClick}>
-                            Update Book
-                          </Button>
-                          <Button
-                            variant="contained"
-                            color="error"
-                            onClick={handleDeleteClick}
-                          >
-                            Delete Book
-                          </Button>
-                        </div>
-                      )}
+                      <BookInformation
+                        bookData={bookData}
+                        editMode={editMode}
+                        updatedBookData={updatedBookData}
+                        handleEditClick={handleEditClick}
+                        handleUpdateClick={handleUpdateClick}
+                        handleDeleteClick={handleDeleteClick}
+                        handleBorrowSuccess={handleBorrowSuccess}
+                        handleReturnSuccess={handleReturnSuccess}
+                      />
                     </CardContent>
                   </Card>
                 </Grid>
