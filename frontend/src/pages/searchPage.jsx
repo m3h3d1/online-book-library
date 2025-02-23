@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axiosInstance from '../utils/axiosInstance';
+import { Typography, TextField, Button, Paper, Grid } from '@mui/material';
 
 const UserSearchPage = () => {
   const [userId, setUserId] = useState('');
@@ -20,27 +21,35 @@ const UserSearchPage = () => {
   };
 
   return (
-    <div>
-      <h1>Search User by UserId</h1>
-      <div>
-        <label>
-          User ID:
-          <input type="text" value={userId} onChange={handleUserIdChange} />
-        </label>
-        <button onClick={searchUser}>Search</button>
-      </div>
-      {userData && (
-        <div>
-          <h2>User Information</h2>
-          <p>User ID: {userData.userId}</p>
-          <p>First Name: {userData.firstName}</p>
-          <p>Last Name: {userData.lastName}</p>
-          <p>Email: {userData.email}</p>
-          <p>Address: {userData.address}</p>
-          <p>Role: {userData.role}</p>
-        </div>
-      )}
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Paper style={{ padding: 20 }}>
+          <Typography variant="h4"><center>Search User by User ID</center></Typography>
+          <div>
+            <TextField
+              label="User ID"
+              value={userId}
+              onChange={handleUserIdChange}
+              variant="outlined"
+            />
+            <Button variant="contained" color="primary" onClick={searchUser}>
+              Search
+            </Button>
+          </div>
+          {userData && (
+            <div>
+              <Typography variant="h6">User Information</Typography>
+              <Typography>User ID: {userData.userId}</Typography>
+              <Typography>First Name: {userData.firstName}</Typography>
+              <Typography>Last Name: {userData.lastName}</Typography>
+              <Typography>Email: {userData.email}</Typography>
+              <Typography>Address: {userData.address}</Typography>
+              <Typography>Role: {userData.role}</Typography>
+            </div>
+          )}
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

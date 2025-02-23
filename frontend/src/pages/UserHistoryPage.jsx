@@ -11,10 +11,12 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
+import BookReturn from './books/borrow/BookReturn';
 
 const UserHistoryPage = () => {
   const [history, setHistory] = useState([]);
   const { userId } = useParams();
+  const [bookData, setBookData] = useState(null);
 
   useEffect(() => {
     axiosInstance.get(`/users/${userId}/history`)
@@ -26,16 +28,21 @@ const UserHistoryPage = () => {
       });
   }, [userId]);
 
+  const handleReturnSuccess = (returnedBook) => {
+    setBookData(returnedBook);
+  };
+
   return (
     <div>
-      <Typography variant="h4">User Borrowing History</Typography>
+      <Typography variant="h4"><center>User Borrowing History</center></Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Book Title</TableCell>
-              <TableCell>Due Date</TableCell>
-              <TableCell>Return Date</TableCell>
+              <TableCell><b>Book Title</b></TableCell>
+              <TableCell><b>Due Date</b></TableCell>
+              <TableCell><b>Return Date</b></TableCell>
+              <TableCell><b>Action</b></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -44,6 +51,13 @@ const UserHistoryPage = () => {
                 <TableCell>{item.bookTitle}</TableCell>
                 <TableCell>{item.dueDate}</TableCell>
                 <TableCell>{item.returnDate || 'Not returned yet'}</TableCell>
+                <TableCell>
+                  {item.returnDate === null ? (
+                    <BookReturn bookId={item.bookId} onReturnSuccess={handleReturnSuccess} />
+                  ) : (
+                    'Book Returned'
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

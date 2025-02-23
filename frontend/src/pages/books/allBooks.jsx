@@ -8,7 +8,6 @@ const AllBooks = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Make an HTTP GET request to fetch book data from the API
     axiosInstance.get('/books/all')
       .then((response) => {
         setBookData(response.data);
@@ -29,14 +28,15 @@ const AllBooks = () => {
           <Grid container spacing={3}>
             {bookData.map((book) => (
               <Grid item xs={12} sm={6} md={4} lg={3} key={book.bookId}>
-                <Card>
+                <Card style={{ height: '600px', display: 'flex', flexDirection: 'column' }}>
                   <CardMedia
                     component="img"
                     alt={book.title}
-                    style={{ height: '80%', width: '80%', objectFit: 'cover' }}
+                    height={"400px"}
+                    style={{ flex: 1, objectFit: 'cover' }}
                     image={book.coverUrl}
                   />
-                  <CardContent>
+                  <CardContent style={{ flex: 1 }}>
                     <Link to={`/books/${book.bookId}`}>
                       <Typography variant="h6" component="div">
                         {book.title}

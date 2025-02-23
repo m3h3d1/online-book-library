@@ -1,11 +1,33 @@
-import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
+import {
+  getRole,
+  isAdmin,
+  isCustomer,
+  isLogged,
+} from "./accountInfo";
 
-const Authenticate = () => {
-  const token = localStorage.getItem("token");
-  console.log("token is ", token);
+export const Authenticate = ({ requiredRole }) => {
+  console.log("Required role: " + requiredRole + ", user role: " + getRole());
 
-  return <div>{token ? <Outlet /> : <Navigate to="/login" />}</div>;
+  if (
+    (requiredRole === "ANY" ||
+      requiredRole === "CUSTOMER" ||
+      requiredRole === "ADMIN") &&
+    !isLogged()
+  ) {
+    return <Navigate to={"/login"} />;
+  }
+
+  if (requiredRole === "ADMIN" && isCustomer()) {
+    return <Navigate to={"/"} />;
+  }
+
+  if (requiredRole === "CUSTOMER" && isAdmin()) {
+    return <Navigate to={"/"} />;
+  }
+
+  console.log("Serving user the contents.");
+  return <Outlet />;
 };
 
 export default Authenticate;

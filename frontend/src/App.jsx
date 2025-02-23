@@ -18,6 +18,7 @@ import AdminPage from "./pages/AdminPage";
 // import SignIn from "./pages/SignIn";
 
 function App() {
+  
   return (
     <div>
       <Header />
@@ -25,17 +26,18 @@ function App() {
         <Route path="/" exact element={<HomePage />} />
         <Route path="/user/register" element={<RegistrationPage />} />
         <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/signin" element={<SignIn />} /> */}
-        <Route path="/books/:bookId" element={<BookDetailsPage/>} />
-        <Route element={<Authenticate />}>
-          <Route path="/books/create" element={<AddBookPage />} />
-          <Route path="/users" element={<UserList />} />
+        <Route element={<Authenticate requiredRole={"ANY"} />}>
           <Route path="/users/:userId" element={<UserDetails />} />
-          <Route path="/users/search/:userId" element={<SearchPage />} />
           <Route path="/users/:userId/history" element={<UserHistoryPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/books/:bookId/reviews" element={<BookReviewsPage/>} />
+          <Route path="/books/:bookId" element={<BookDetailsPage/>} />
         </Route>
-        <Route path="/books/:bookId/reviews" element={<BookReviewsPage/>} />
+        <Route element={<Authenticate requiredRole={"ADMIN"} />} >
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/users/search/:userId" element={<SearchPage />} />
+          <Route path="/users" element={<UserList />} />
+          <Route path="/books/create" element={<AddBookPage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />

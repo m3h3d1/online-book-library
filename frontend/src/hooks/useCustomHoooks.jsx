@@ -39,13 +39,19 @@ const UseCustomHooks = () => {
         console.log("The Response", resp);
         console.log("Response from login ", data);
         const token = resp.data.Authorization;
+        const userId = resp.data.userId;
+        const email = resp.data.email;
+        const role = resp.data.role;
         localStorage.setItem("token", token);
+        localStorage.setItem("userId", userId);
+        localStorage.setItem("email", email);
+        localStorage.setItem("role", role);
         setIsRegistrationDone(true);
-        if(data.email=="shafi@gmail.com") {
+        if(role=="ADMIN") {
           navigate("/admin");
         }
         else {
-          navigate("/"); // Use navigate to redirect to the login page
+          navigate("/");
         }
       })
       .catch((error) => {

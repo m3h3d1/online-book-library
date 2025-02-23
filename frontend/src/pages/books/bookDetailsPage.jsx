@@ -16,7 +16,6 @@ import {
   DialogActions,
 } from '@mui/material';
 import BookBorrow from './borrow/BookBorrow';
-import BookReturn from './borrow/BookReturn';
 
 const BookDetailsPage = () => {
   const { bookId } = useParams();
@@ -73,10 +72,6 @@ const BookDetailsPage = () => {
 
   const handleBorrowSuccess = (borrowedBook) => {
     setBookData(borrowedBook);
-  };
-
-  const handleReturnSuccess = (returnedBook) => {
-    setBookData(returnedBook);
   };
 
   return (
@@ -149,7 +144,6 @@ const BookDetailsPage = () => {
                             Delete Book
                           </Button>
                           <BookBorrow bookId={bookId} onBorrowSuccess={handleBorrowSuccess} />
-                          <BookReturn bookId={bookId} onReturnSuccess={handleReturnSuccess} />
                         </div>
                       )}
                     </CardContent>
