@@ -16,6 +16,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import BookBorrow from './borrow/BookBorrow';
+import BookReserve from './reserve/BookReserve';
 
 const BookDetailsPage = () => {
   const { bookId } = useParams();
@@ -25,6 +26,7 @@ const BookDetailsPage = () => {
   const [editMode, setEditMode] = useState(false);
   const [updatedBookData, setUpdatedBookData] = useState({});
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const role = localStorage.getItem('role');
 
   useEffect(() => {
     axiosInstance.get(`/books/${bookId}`)
@@ -72,6 +74,10 @@ const BookDetailsPage = () => {
 
   const handleBorrowSuccess = (borrowedBook) => {
     setBookData(borrowedBook);
+  };
+
+  const handleReserveSuccess = (reservedBook) => {
+    setBookData(reservedBook);
   };
 
   return (
@@ -127,11 +133,7 @@ const BookDetailsPage = () => {
                           </Typography>
                         </div>
                       )}
-                      {editMode ? (
-                        <Button variant="contained" color="primary" onClick={handleUpdateClick}>
-                          Confirm Update
-                        </Button>
-                      ) : (
+                      {role === 'ADMIN' && !editMode ? (
                         <div>
                           <Button variant="contained" color="primary" onClick={handleEditClick}>
                             Update Book
@@ -143,9 +145,19 @@ const BookDetailsPage = () => {
                           >
                             Delete Book
                           </Button>
-                          <BookBorrow bookId={bookId} onBorrowSuccess={handleBorrowSuccess} />
                         </div>
-                      )}
+                      ) : null}
+                      {role === 'CUSTOMER' && !editMode && bookData.availabilityStatus === 'BORROWED' ? (
+                        <BookReserve bookId={bookId} onReserveSuccess={handleReserveSuccess} />
+                      ) : null}
+                      {role === 'CUSTOMER' && !editMode && bookData.availabilityStatus === 'AVAILABLE' ? (
+                        <BookBorrow bookId={bookId} onBorrowSuccess={handleBorrowSuccess} />
+                      ) : null}
+                      {editMode ? (
+                        <Button variant="contained" color="primary" onClick={handleUpdateClick}>
+                          Confirm Update
+                        </Button>
+                      ) : null}
                     </CardContent>
                   </Card>
                 </Grid>

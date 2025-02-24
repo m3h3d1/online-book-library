@@ -10,6 +10,8 @@ import {
 const Header = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const userId = localStorage.getItem('userId');
+  const role = localStorage.getItem('role');
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -27,10 +29,30 @@ const Header = () => {
             Home
           </Button>
           {token ? (
-            <>
-              <Button color="inherit" component={Link} to="/users/4/history">
-                My History
-              </Button>
+            <> 
+              {
+                role==="CUSTOMER" && (
+                  <>
+                    <Button color="inherit" component={Link} to={`/users/${userId}/history`}>
+                      Borrowed Books
+                    </Button>
+                    <Button color="inherit" component={Link} to={`/users/${userId}/reserved-books`}>
+                      Reserved Books
+                    </Button>
+                  </>
+                )
+              }
+
+              {
+                role==="ADMIN" && (
+                  <>
+                    <Button color="inherit" component={Link} to={`/admin`}>
+                      Admin
+                    </Button>
+                  </>
+                )
+              }
+              
               <Button color="inherit" onClick={handleLogout}>
                 Logout
               </Button>

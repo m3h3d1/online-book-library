@@ -15,7 +15,8 @@ import Footer from "./components/common/footer";
 import BookReviewsPage from "./pages/reviews/BookReviewsPage";
 import UserHistoryPage from "./pages/UserHistoryPage";
 import AdminPage from "./pages/AdminPage";
-// import SignIn from "./pages/SignIn";
+import UserReservationHistoryPage from "./pages/books/reserve/UserReservationHistoryPage";
+import SearchBooksPage from "./pages/books/SearchBooksPage";
 
 function App() {
   
@@ -31,6 +32,8 @@ function App() {
           <Route path="/users/:userId/history" element={<UserHistoryPage />} />
           <Route path="/books/:bookId/reviews" element={<BookReviewsPage/>} />
           <Route path="/books/:bookId" element={<BookDetailsPage/>} />
+          <Route path="/users/:userId/reserved-books" element={<UserReservationHistoryPage />} />
+          <Route path="/books/search" element={<SearchBooksPage />} />
         </Route>
         <Route element={<Authenticate requiredRole={"ADMIN"} />} >
           <Route path="/admin" element={<AdminPage />} />

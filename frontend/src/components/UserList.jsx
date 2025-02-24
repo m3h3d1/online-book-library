@@ -65,7 +65,12 @@ const UserList = () => {
                   <TableCell>
                     <Link to={`/users/${user.userId}/history`}>
                       <Button variant="outlined" color="primary">
-                        User History
+                        Borrowed Books
+                      </Button>
+                    </Link>
+                    <Link to={`/users/${user.userId}/reserved-books`}>
+                      <Button variant="outlined" color="secondary">
+                        Reserved Books
                       </Button>
                     </Link>
                     <Button
