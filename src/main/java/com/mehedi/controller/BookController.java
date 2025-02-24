@@ -77,8 +77,7 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> searchBooksByTitle(@RequestBody BookSearchByPrefixDTO bookSearchByPrefixDTO) {
-        String title = bookSearchByPrefixDTO.getTitle();
+    public ResponseEntity<?> searchBooksByTitle(@RequestParam("title") String title) {
         try {
             List<Book> books = bookService.searchBooksByTitle(title);
             if (!books.isEmpty()) {
