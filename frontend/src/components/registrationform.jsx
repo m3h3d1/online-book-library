@@ -80,7 +80,7 @@ const RegistrationForm = () => {
           placeholder="Enter First Name"
           onChange={(e) => setFirstName(e.target.value)}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
 
         <TextField
@@ -90,7 +90,7 @@ const RegistrationForm = () => {
           placeholder="Enter Last Name"
           onChange={(e) => setLastName(e.target.value)}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
 
         <TextField
@@ -100,7 +100,7 @@ const RegistrationForm = () => {
           placeholder="Enter Email"
           onChange={(e) => setEmail(e.target.value)}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
 
         <TextField
@@ -111,7 +111,7 @@ const RegistrationForm = () => {
           type="password"
           onChange={(e) => setPassword(e.target.value)}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
 
         <TextField
@@ -121,10 +121,10 @@ const RegistrationForm = () => {
           placeholder="Enter Address"
           onChange={(e) => setAddress(e.target.value)}
           fullWidth
-          margin="normal"
+          margin="dense"
         />
 
-        <FormControl variant="outlined" fullWidth margin="normal">
+        <FormControl variant="outlined" fullWidth margin="dense">
           <InputLabel id="role-label">Role</InputLabel>
           <Select
             labelId="role-label"

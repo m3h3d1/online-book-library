@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { CircularProgress, Typography, Grid, Card, CardContent, CardMedia, Button, TextField } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const SearchBooksPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -9,7 +10,9 @@ const SearchBooksPage = () => {
 
   const handleSearch = () => {
     setLoading(true);
-    axiosInstance.get('/books/search', { title: searchQuery })
+    axiosInstance.get('/books/search', {
+      params: { title: searchQuery }
+    })
       .then((response) => {
         setSearchResults(response.data);
         setLoading(false);
@@ -18,7 +21,7 @@ const SearchBooksPage = () => {
         console.error('Error searching for books:', error);
         setLoading(false);
       });
-  };
+  };  
 
   return (
     <div>
@@ -46,15 +49,22 @@ const SearchBooksPage = () => {
                   image={book.coverUrl}
                 />
                 <CardContent style={{ flex: 1 }}>
-                  <Typography variant="h6" component="div">
-                    {book.title}
-                  </Typography>
+                  <Link to={`/books/${book.bookId}`}>
+                    <Typography variant="h6" component="div">
+                      {book.title}
+                    </Typography>
+                  </Link>
                   <Typography variant="body2" color="textSecondary">
                     Author: {book.author}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     Availability Status: {book.availabilityStatus}
                   </Typography>
+                  <Link to={`/books/${book.bookId}/reviews`}>
+                    <Button variant="contained" color="primary">
+                      Rating & Reviews
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             </Grid>

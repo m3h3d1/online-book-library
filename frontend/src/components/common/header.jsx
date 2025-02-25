@@ -25,18 +25,21 @@ const Header = () => {
           Online Book Library
         </Typography>
         <div>
-          <Button color="inherit" component={Link} to="/">
+          <Button variant="contained" color="primary" component={Link} to="/">
             Home
+          </Button>
+          <Button variant="contained" color="primary" component={Link} to="/books/search">
+          Search Books
           </Button>
           {token ? (
             <> 
               {
                 role==="CUSTOMER" && (
                   <>
-                    <Button color="inherit" component={Link} to={`/users/${userId}/history`}>
+                    <Button variant="contained" color="primary" component={Link} to={`/users/${userId}/history`}>
                       Borrowed Books
                     </Button>
-                    <Button color="inherit" component={Link} to={`/users/${userId}/reserved-books`}>
+                    <Button variant="contained" color="primary" component={Link} to={`/users/${userId}/reserved-books`}>
                       Reserved Books
                     </Button>
                   </>
@@ -46,23 +49,23 @@ const Header = () => {
               {
                 role==="ADMIN" && (
                   <>
-                    <Button color="inherit" component={Link} to={`/admin`}>
+                    <Button variant="contained" color="primary" component={Link} to={`/admin`}>
                       Admin
                     </Button>
                   </>
                 )
               }
               
-              <Button color="inherit" onClick={handleLogout}>
+              <Button variant="contained" color="primary" onClick={handleLogout}>
                 Logout
               </Button>
             </>
           ) : (
             <>
-              <Button color="inherit" component={Link} to="/user/register">
+              <Button variant="contained" color="primary" component={Link} to="/user/register">
                 Register
               </Button>
-              <Button color="inherit" component={Link} to="/login">
+              <Button variant="contained" color="primary" component={Link} to="/login">
                 Login
               </Button>
             </>

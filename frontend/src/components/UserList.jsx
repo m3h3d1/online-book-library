@@ -35,7 +35,7 @@ const UserList = () => {
   return (
     <div>
       <Typography variant="h4" gutterBottom>
-        User Information
+        <center>User Information</center>
       </Typography>
       {loading ? (
         <CircularProgress />
@@ -44,12 +44,12 @@ const UserList = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>User ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Email</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Role</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell><b>User ID</b></TableCell>
+                <TableCell><b>Name</b></TableCell>
+                <TableCell><b>Email</b></TableCell>
+                <TableCell><b>Address</b></TableCell>
+                <TableCell><b>Role</b></TableCell>
+                <TableCell><center><b>Actions</b></center></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

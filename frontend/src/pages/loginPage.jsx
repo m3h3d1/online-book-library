@@ -1,8 +1,5 @@
-// import { useState } from "react";
-// import axiosInstance from "../utils/axiosInstance";
-// import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import UseCustomHooks from "../hooks/useCustomHoooks";
-// import React from 'react';
 
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
@@ -12,7 +9,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
 
 
 const LoginPage = () => {
@@ -73,13 +69,8 @@ const LoginPage = () => {
             Sign In
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link to="/user/register" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

@@ -6,7 +6,7 @@ const AdminPage = () => {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Admin Page
+        <center>Admin Page</center>
       </Typography>
       <Button
         variant="contained"

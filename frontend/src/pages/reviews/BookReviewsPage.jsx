@@ -11,6 +11,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
+import AverageRating from '../books/AverageRating';
 
 const BookReviewsPage = () => {
   const [reviews, setReviews] = useState([]);
@@ -61,11 +62,23 @@ const BookReviewsPage = () => {
       });
   };
 
+  const calculateAverageRating = (items) => {
+    if (items.length === 0) {
+      return 0;
+    }
+  
+    const totalRating = items.reduce((total, item) => total + item.rating, 0);
+    return totalRating / items.length;
+  };
+  
+  const averageRating = calculateAverageRating(reviews);
+
   return (
     <div>
       <Typography variant="h4" gutterBottom>
-        Reviews and Ratings
+        <center>Reviews and Ratings</center>
       </Typography>
+      <AverageRating averageRating={averageRating} />
       <Button onClick={() => handleEditReview('add')} variant="contained" color="primary">
         Add Review
       </Button>

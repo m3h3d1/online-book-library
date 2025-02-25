@@ -13,10 +13,10 @@ import AddBookPage from "./pages/AddBookPage";
 import BookDetailsPage from "./pages/books/bookDetailsPage";
 import Footer from "./components/common/footer";
 import BookReviewsPage from "./pages/reviews/BookReviewsPage";
-import UserHistoryPage from "./pages/UserHistoryPage";
 import AdminPage from "./pages/AdminPage";
 import UserReservationHistoryPage from "./pages/books/reserve/UserReservationHistoryPage";
 import SearchBooksPage from "./pages/books/SearchBooksPage";
+import UserHistoryPage from "./pages/UserBorrowingHistoryPage";
 
 function App() {
   
