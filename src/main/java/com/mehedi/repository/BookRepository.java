@@ -2,7 +2,6 @@ package com.mehedi.repository;
 
 import com.mehedi.constatnts.AvailabilityStatus;
 import com.mehedi.entity.Book;
-import com.mehedi.entity.BookBorrow;
 import com.mehedi.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

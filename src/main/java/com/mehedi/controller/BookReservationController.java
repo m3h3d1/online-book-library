@@ -3,9 +3,7 @@ package com.mehedi.controller;
 import com.mehedi.exception.BookReservationException;
 import com.mehedi.exception.ReservationNotFoundException;
 import com.mehedi.exception.UnauthorizedUserException;
-import com.mehedi.repository.UserRepository;
 import com.mehedi.service.BookReservationService;
-import com.mehedi.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +14,6 @@ import org.springframework.web.bind.annotation.*;
 public class BookReservationController {
     @Autowired
     private BookReservationService reservationService;
-
-    @Autowired
-    private UserAuthService userAuthService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveBook(@PathVariable Long bookId) {

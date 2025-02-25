@@ -1,10 +1,8 @@
 package com.mehedi.service;
 
-import com.mehedi.entity.BookBorrow;
 import com.mehedi.entity.User;
 import com.mehedi.exception.ErrorMessage;
 import com.mehedi.exception.UnauthorizedUserException;
-import com.mehedi.exception.UserNotFoundException;
 import com.mehedi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -13,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {

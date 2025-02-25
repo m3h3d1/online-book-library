@@ -66,7 +66,7 @@ public class BorrowService {
 
 
 
-    public void returnBook(Long bookId, Long temp) {
+    public void returnBook(Long bookId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
 

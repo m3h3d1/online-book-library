@@ -1,15 +1,12 @@
 package com.mehedi.service;
 
 import com.mehedi.dto.BookReviewDTO;
-import com.mehedi.dto.BorrowHistoryDTO;
 import com.mehedi.entity.Book;
-import com.mehedi.entity.BookBorrow;
 import com.mehedi.entity.BookReview;
 import com.mehedi.entity.User;
 import com.mehedi.exception.BookNotFoundException;
 import com.mehedi.exception.ReviewNotFoundException;
 import com.mehedi.exception.UnauthorizedUserException;
-import com.mehedi.exception.UserNotFoundException;
 import com.mehedi.repository.BookRepository;
 import com.mehedi.repository.BookReviewRepository;
 import com.mehedi.repository.UserRepository;
@@ -61,13 +58,13 @@ public class BookReviewService {
         }
     }
 
-    public void updateReviewAndRating(Long userId, Long bookId, Long reviewId, Integer newRating, String newComment) {
+    public void updateReviewAndRating(Long bookId, Long reviewId, Integer newRating, String newComment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User userNow = userRepository.findByEmail(authentication.getName()).get();
         if(!userNow.getRole().equals(User.Role.CUSTOMER)) {
             throw new UnauthorizedUserException("You are not Authorized");
         }
-        userId = userNow.getUserId();
+        Long userId = userNow.getUserId();
 
 
         Optional<Book> optionalBook = bookRepository.findByBookId(bookId);

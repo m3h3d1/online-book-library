@@ -2,8 +2,8 @@ package com.mehedi.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mehedi.SpringApplicationContext;
+import com.mehedi.dto.LoginRequestDTO;
 import com.mehedi.dto.UserDto;
-import com.mehedi.dto.UserLoginRequestModel;
 import com.mehedi.service.UserAuthService;
 import com.mehedi.utils.JWTUtils;
 import jakarta.servlet.FilterChain;
@@ -29,10 +29,11 @@ import java.util.*;
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            UserLoginRequestModel creds = new ObjectMapper().readValue(request.getInputStream(), UserLoginRequestModel.class);
+            LoginRequestDTO creds = new ObjectMapper().readValue(request.getInputStream(), LoginRequestDTO.class);
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(creds.getEmail(),creds.getPassword())
             );

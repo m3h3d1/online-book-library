@@ -1,7 +1,6 @@
 package com.mehedi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mehedi.constatnts.AvailabilityStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

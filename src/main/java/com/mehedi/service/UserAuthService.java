@@ -4,7 +4,6 @@ import com.mehedi.dto.LoginResponseDTO;
 import com.mehedi.dto.UserDto;
 import com.mehedi.entity.User;
 import com.mehedi.exception.ErrorMessage;
-import com.mehedi.exception.UserNotFoundException;
 import com.mehedi.repository.UserRepository;
 import com.mehedi.utils.JWTUtils;
 import jakarta.transaction.Transactional;

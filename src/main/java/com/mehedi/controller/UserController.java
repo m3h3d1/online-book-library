@@ -53,10 +53,10 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<?> login(@RequestBody UserLoginRequestModel userLoginReqModel, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletResponse response) {
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginReqModel.getEmail(), userLoginReqModel.getPassword()));
-            UserDto userDto = userAuthService.getUser(userLoginReqModel.getEmail());
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequestDTO.getEmail(), loginRequestDTO.getPassword()));
+            UserDto userDto = userAuthService.getUser(loginRequestDTO.getEmail());
             String accessToken = JWTUtils.generateToken(userDto.getEmail());
             Map<String, Object> loginResponse = new HashMap<>();
             loginResponse.put("userId", userDto.getUserId());

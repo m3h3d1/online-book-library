@@ -1,6 +1,5 @@
 package com.mehedi.controller;
 
-import com.mehedi.dto.BookSearchByPrefixDTO;
 import com.mehedi.entity.Book;
 import com.mehedi.exception.BookNotFoundException;
 import com.mehedi.service.BookService;

@@ -3,7 +3,6 @@ package com.mehedi.controller;
 import com.mehedi.dto.BookReviewDTO;
 import com.mehedi.dto.BookReviewRequest;
 import com.mehedi.dto.ReviewRequest;
-import com.mehedi.entity.BookReview;
 import com.mehedi.exception.ReviewNotFoundException;
 import com.mehedi.exception.UnauthorizedUserException;
 import com.mehedi.service.BookReviewService;
@@ -49,11 +48,10 @@ public class BookReviewController {
             @PathVariable Long reviewId,
             @RequestBody ReviewRequest reviewRequest
     ) {
-        Long userId = 1L;
         Integer newRating = reviewRequest.getRating();
         String newComment = reviewRequest.getComment();
         try {
-            bookReviewService.updateReviewAndRating(userId, bookId, reviewId, newRating, newComment);
+            bookReviewService.updateReviewAndRating(bookId, reviewId, newRating, newComment);
             return new ResponseEntity<>("Review updated successfully", HttpStatus.OK);
         } catch (ReviewNotFoundException e) {
             return new ResponseEntity<>("Review not found for the given book and review IDs", HttpStatus.NOT_FOUND);
