@@ -15,11 +15,13 @@ import java.util.Optional;
 
 @Service
 public class BookService {
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public BookService(BookRepository bookRepository, UserRepository userRepository) {
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
+    }
 
     public Book createBook(Book book) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

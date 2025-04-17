@@ -14,8 +14,11 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/books")
 public class BookController {
+    private final BookService bookService;
     @Autowired
-    private BookService bookService;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
+    }
 
     @PostMapping("/create")
     public ResponseEntity<Book> createBook(@RequestBody Book book) {

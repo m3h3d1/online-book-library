@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/books/{bookId}")
 public class BookReservationController {
+    private final BookReservationService reservationService;
     @Autowired
-    private BookReservationService reservationService;
+    public BookReservationController(BookReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @PostMapping("/reserve")
     public ResponseEntity<String> reserveBook(@PathVariable Long bookId) {

@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/books")
 public class BorrowController {
-    @Autowired
     private BorrowService borrowService;
+
+    @Autowired
+    public BorrowController(BorrowService borrowService) {
+        this.borrowService = borrowService;
+    }
 
     @PostMapping("/{bookId}/borrow")
     public ResponseEntity<?> borrowBook(@PathVariable Long bookId, @RequestBody BorrowRequest borrowRequest) {

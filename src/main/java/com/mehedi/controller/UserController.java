@@ -26,20 +26,20 @@ import java.util.Set;
 @RequestMapping("")
 public class UserController {
 
-    @Autowired
-    private UserAuthService userAuthService;
-    
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final UserAuthService userAuthService;
+    private final AuthenticationManager authenticationManager;
+    private final BorrowService borrowService;
+    private final UserService userService;
+    private final BookReservationService bookReservationService;
 
     @Autowired
-    private BorrowService borrowService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private BookReservationService bookReservationService;
+    public UserController(UserAuthService userAuthService, AuthenticationManager authenticationManager, BorrowService borrowService, UserService userService, BookReservationService bookReservationService) {
+        this.userAuthService = userAuthService;
+        this.authenticationManager = authenticationManager;
+        this.borrowService = borrowService;
+        this.userService = userService;
+        this.bookReservationService = bookReservationService;
+    }
 
     @GetMapping("/users/{userId}/history")
     public ResponseEntity<List<BorrowHistoryDTO>> getUserBorrowHistory(@PathVariable Long userId) {

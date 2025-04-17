@@ -14,9 +14,12 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
+    private final UserRepository userRepository;
 
-    private UserRepository userRepository;
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public User findUserDetails(Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

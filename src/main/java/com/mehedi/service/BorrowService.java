@@ -20,14 +20,16 @@ import java.util.*;
 
 @Service
 public class BorrowService {
-    @Autowired
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
+    private final UserRepository userRepository;
+    private final BookBorrowRepository bookBorrowRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BookBorrowRepository bookBorrowRepository;
+    public BorrowService(BookRepository bookRepository, UserRepository userRepository, BookBorrowRepository bookBorrowRepository) {
+        this.bookRepository = bookRepository;
+        this.userRepository = userRepository;
+        this.bookBorrowRepository = bookBorrowRepository;
+    }
 
     @Transactional
     public void borrowBook(Long bookId, LocalDate dueDate) {
